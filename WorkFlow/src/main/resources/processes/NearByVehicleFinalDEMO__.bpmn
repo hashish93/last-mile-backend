@@ -1,0 +1,675 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <message id="startPackagePickedupModule" name="startPackagePickedupModule"></message>
+  <message id="startDriverArrivalModule" name="startDriverArrivalModule"></message>
+  <message id="startNearByVehicleModule" name="startNearByVehicleModule"></message>
+  <message id="startCancelRequestModule" name="startCancelRequestModule"></message>
+  <message id="messageA5" name="messageA5"></message>
+  <message id="startDriverResponse" name="startDriverResponse"></message>
+  <message id="messageA7" name="messageA7"></message>
+  <message id="messageA1" name="messageA1"></message>
+  <process id="myProcess" name="My process" isExecutable="true">
+    <serviceTask id="servicetask10" name="Send push notification to &quot;Customer&quot; as &quot;Driver Arrived&quot;" activiti:delegateExpression="${moocDelegate}"></serviceTask>
+    <serviceTask id="servicetask12" name="Change package status to &quot;Pickup verification&quot;" activiti:delegateExpression="${changePackageStatusDelegate}"></serviceTask>
+    <serviceTask id="servicetask13" name="Send push notification to &quot;Customer&quot; as &quot;Driver Arrived&quot;" activiti:delegateExpression="${sendDriverArrivedNotificationDelegate}"></serviceTask>
+    <subProcess id="eventsubprocess1" name="Event sub Process">
+      <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
+      <exclusiveGateway id="exclusivegateway4" name="Exclusive Gateway"></exclusiveGateway>
+      <serviceTask id="servicetask15" name="Change package status to &quot;Waiting for Customer Alternative&quot;" activiti:delegateExpression="${changePackageStatusDelegate}"></serviceTask>
+      <serviceTask id="servicetask16" name="Send push notification to &quot;Customer&quot; as &quot;No Vehicle Found&quot;" activiti:delegateExpression="${sendNoVehicleNotificationDelegate}"></serviceTask>
+      <sequenceFlow id="flow33" sourceRef="exclusivegateway2" targetRef="servicetask4">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${relatedToHub}]]></conditionExpression>
+      </sequenceFlow>
+      <startEvent id="startevent2" name="Start"></startEvent>
+      <sequenceFlow id="flow68" sourceRef="startevent2" targetRef="exclusivegateway2"></sequenceFlow>
+      <serviceTask id="servicetask27" name="Send push notification to &quot;Customer&quot; as &quot;Pickup loction is not covered&quot;" activiti:delegateExpression="${sendNotificationOutOfRangeDelegate}"></serviceTask>
+      <sequenceFlow id="flow69" sourceRef="exclusivegateway2" targetRef="servicetask27">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!relatedToHub}]]></conditionExpression>
+      </sequenceFlow>
+      <exclusiveGateway id="exclusivegateway8" name="Exclusive Gateway"></exclusiveGateway>
+      <sequenceFlow id="flow75" sourceRef="exclusivegateway4" targetRef="exclusivegateway8">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${vehicleFound}]]></conditionExpression>
+      </sequenceFlow>
+      <serviceTask id="servicetask28" name="Save NearBy Vehicles for Package" activiti:delegateExpression="${saveNearbyVehiclesforPackageDelegate}"></serviceTask>
+      <sequenceFlow id="flow76" sourceRef="exclusivegateway8" targetRef="servicetask28">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!automatic}]]></conditionExpression>
+      </sequenceFlow>
+      <serviceTask id="servicetask29" name="Assign order to nearest driver" activiti:delegateExpression="${assignOrderToNearestDriverDelegate}"></serviceTask>
+      <sequenceFlow id="flow77" sourceRef="exclusivegateway8" targetRef="servicetask29">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${automatic}]]></conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="flow78" sourceRef="servicetask29" targetRef="servicetask28"></sequenceFlow>
+      <receiveTask id="waitNearByVehicles" name="Wait for Status Change to New"></receiveTask>
+      <sequenceFlow id="flow96" sourceRef="waitNearByVehicles" targetRef="exclusivegateway4"></sequenceFlow>
+      <sequenceFlow id="flow97" sourceRef="exclusivegateway4" targetRef="servicetask15">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!vehicleFound}]]></conditionExpression>
+      </sequenceFlow>
+      <receiveTask id="waitAssingPackageAsWaitingForCustomer" name="Wait Assing Package As &quot;WaitingForCustomer&quot;"></receiveTask>
+      <sequenceFlow id="flow98" sourceRef="servicetask15" targetRef="waitAssingPackageAsWaitingForCustomer"></sequenceFlow>
+      <sequenceFlow id="flow99" sourceRef="waitAssingPackageAsWaitingForCustomer" targetRef="servicetask16"></sequenceFlow>
+      <receiveTask id="receivetask3" name="Receive Task"></receiveTask>
+      <sequenceFlow id="flow100" sourceRef="servicetask27" targetRef="receivetask3"></sequenceFlow>
+      <serviceTask id="servicetask4" name="Find Nearby Vehicles" activiti:delegateExpression="${nearByVehicleDelegate}"></serviceTask>
+      <sequenceFlow id="flow95" sourceRef="servicetask4" targetRef="waitNearByVehicles"></sequenceFlow>
+      <serviceTask id="servicetask39" name="Send push notification to &quot;Drivers&quot; as &quot;Go extra&quot;" activiti:delegateExpression="${sendGoExtraNotificationDelegate}"></serviceTask>
+      <receiveTask id="WaitForVehiclesToBeSaved" name="Wait for Vehicles to be saved"></receiveTask>
+      <sequenceFlow id="flow166" sourceRef="servicetask28" targetRef="WaitForVehiclesToBeSaved"></sequenceFlow>
+      <sequenceFlow id="flow167" sourceRef="WaitForVehiclesToBeSaved" targetRef="servicetask39"></sequenceFlow>
+    </subProcess>
+    <serviceTask id="servicetask14" name="Request Time out" activiti:delegateExpression="${moocDelegate}"></serviceTask>
+    <serviceTask id="servicetask20" name="Send push notification to &quot;Customer&quot; as &quot;Request Cancelled&quot;" activiti:delegateExpression="${sendRequestCancelledNotificationDelegate}"></serviceTask>
+    <serviceTask id="servicetask21" name="Change package status to &quot;Cancelled&quot;" activiti:delegateExpression="${changePackageStatusDelegate}"></serviceTask>
+    <startEvent id="messagestartevent8" name="Message start">
+      <messageEventDefinition messageRef="startCancelRequestModule"></messageEventDefinition>
+    </startEvent>
+    <sequenceFlow id="flow41" sourceRef="messagestartevent8" targetRef="servicetask21"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway7" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow48" sourceRef="exclusivegateway7" targetRef="servicetask10"></sequenceFlow>
+    <serviceTask id="servicetask22" name="Driver Report Emergency to Admin" activiti:delegateExpression="${moocDelegate}"></serviceTask>
+    <sequenceFlow id="flow51" sourceRef="exclusivegateway7" targetRef="servicetask22"></sequenceFlow>
+    <serviceTask id="servicetask23" name="Change package status to &quot;Action Needed&quot;" activiti:delegateExpression="${moocDelegate}"></serviceTask>
+    <sequenceFlow id="flow53" sourceRef="servicetask22" targetRef="servicetask23"></sequenceFlow>
+    <subProcess id="eventsubprocess3" name="Event sub Process" triggeredByEvent="true">
+      <exclusiveGateway id="exclusivegateway5" name="Exclusive Gateway"></exclusiveGateway>
+      <sequenceFlow id="flow38" sourceRef="exclusivegateway5" targetRef="servicetask18"></sequenceFlow>
+      <serviceTask id="servicetask18" name="Try Request Later" activiti:delegateExpression="${moocDelegate}"></serviceTask>
+      <startEvent id="startevent4" name="Start"></startEvent>
+      <userTask id="usertask2" name="Customer responds with action"></userTask>
+      <sequenceFlow id="flow111" sourceRef="startevent4" targetRef="usertask2"></sequenceFlow>
+      <sequenceFlow id="flow112" sourceRef="usertask2" targetRef="exclusivegateway5"></sequenceFlow>
+      <callActivity id="callactivity1" name="Call Schedule Request"></callActivity>
+      <sequenceFlow id="flow113" sourceRef="exclusivegateway5" targetRef="callactivity1"></sequenceFlow>
+    </subProcess>
+    <boundaryEvent id="boundarytimer3" name="Timer" attachedToRef="eventsubprocess3" cancelActivity="true">
+      <timerEventDefinition>
+        <timeDuration>PT5M</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <serviceTask id="servicetask25" name="Timeout" activiti:delegateExpression="${moocDelegate}"></serviceTask>
+    <sequenceFlow id="flow63" sourceRef="boundarytimer3" targetRef="servicetask25"></sequenceFlow>
+    <startEvent id="messagestartevent10" name="Start">
+      <messageEventDefinition messageRef="startDriverArrivalModule"></messageEventDefinition>
+    </startEvent>
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <serviceTask id="servicetask3" name="Change package status to &quot;New&quot;" activiti:delegateExpression="${changePackageStatusDelegate}"></serviceTask>
+    <serviceTask id="servicetask1" name="Get pickup location hub" activiti:delegateExpression="${pickUpHubDelegate}"></serviceTask>
+    <startEvent id="messagestartevent1" name="Message start">
+      <messageEventDefinition messageRef="startNearByVehicleModule"></messageEventDefinition>
+    </startEvent>
+    <sequenceFlow id="flow67" sourceRef="messagestartevent1" targetRef="eventsubprocess1"></sequenceFlow>
+    <serviceTask id="servicetask24" name="My Request Time OUT" activiti:delegateExpression="${moocDelegate}"></serviceTask>
+    <subProcess id="eventsubprocess6" name="Event sub Process">
+      <startEvent id="startevent5" name="Start"></startEvent>
+      <serviceTask id="servicetask32" name="Assinging the Job Order to Driver" activiti:delegateExpression="${assingTheJobOrderToDriverDelegate}"></serviceTask>
+      <serviceTask id="servicetask31" name="Change package status to &quot;Awaiting Pickup&quot;" activiti:delegateExpression="${changePackageStatusDelegate}"></serviceTask>
+      <exclusiveGateway id="exclusivegateway13" name="Exclusive Gateway"></exclusiveGateway>
+      <serviceTask id="servicetask35" name="Change package status to &quot;Action Needed&quot;" activiti:delegateExpression="${changePackageStatusDelegate}"></serviceTask>
+      <sequenceFlow id="flow110" sourceRef="servicetask35" targetRef="WaitForAssingPackageAsActionNeeded"></sequenceFlow>
+      <receiveTask id="WaitForAssingPackageAsActionNeeded" name="Wait for Assing Package As Action Needed"></receiveTask>
+      <receiveTask id="WaitForAssingPackageAsAWaitingPickup" name="Wait for Assing Package As AWaiting PickUp"></receiveTask>
+      <sequenceFlow id="flow142" sourceRef="servicetask31" targetRef="WaitForAssingPackageAsAWaitingPickup"></sequenceFlow>
+      <sequenceFlow id="flow164" sourceRef="exclusivegateway13" targetRef="servicetask32">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${driverResponse}]]></conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="flow165" sourceRef="exclusivegateway13" targetRef="servicetask35">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!driverResponse}]]></conditionExpression>
+      </sequenceFlow>
+      <serviceTask id="servicetask40" name="Send push notification to &quot;Customer&quot; as &quot;Driver Assigned&quot;" activiti:delegateExpression="${sendDriverAssignedNotificationDelegate}"></serviceTask>
+      <sequenceFlow id="flow170" sourceRef="servicetask40" targetRef="servicetask31"></sequenceFlow>
+      <receiveTask id="waitUntilTheJobOrderAssignedtoDriver" name="Wait Until The Job Order Assigned to Driver"></receiveTask>
+      <sequenceFlow id="flow171" sourceRef="servicetask32" targetRef="waitUntilTheJobOrderAssignedtoDriver"></sequenceFlow>
+      <sequenceFlow id="flow172" sourceRef="waitUntilTheJobOrderAssignedtoDriver" targetRef="servicetask40"></sequenceFlow>
+      <receiveTask id="waitForDriverResponse" name="Wait for Drivers 's Responses"></receiveTask>
+      <sequenceFlow id="flow188" sourceRef="startevent5" targetRef="waitForDriverResponse"></sequenceFlow>
+      <sequenceFlow id="flow189" sourceRef="waitForDriverResponse" targetRef="exclusivegateway13"></sequenceFlow>
+      <boundaryEvent id="boundarytimer6" name="Timer" attachedToRef="waitForDriverResponse" cancelActivity="false">
+        <timerEventDefinition>
+          <timeDuration xsi:type="tFormalExpression">PT2S</timeDuration>
+        </timerEventDefinition>
+      </boundaryEvent>
+      <serviceTask id="servicetask45" name="Service Task" activiti:delegateExpression="${moocDelegate}"></serviceTask>
+      <sequenceFlow id="flow191" sourceRef="boundarytimer6" targetRef="servicetask45"></sequenceFlow>
+    </subProcess>
+    <boundaryEvent id="boundarytimer4" name="Timer" attachedToRef="eventsubprocess6" cancelActivity="false">
+      <timerEventDefinition>
+        <timeDuration>PT10S</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow137" sourceRef="boundarytimer4" targetRef="servicetask24"></sequenceFlow>
+    <subProcess id="eventsubprocess7" name="Event sub Process" triggeredByEvent="true">
+      <serviceTask id="servicetask38" name="Send push notification to &quot;Customer&quot; as &quot;Vehicle , Driver Details &amp; ETA&quot;" activiti:delegateExpression="${moocDelegate}"></serviceTask>
+      <userTask id="usertask3" name="Driver responds that he navigate" xmlns:activiti="http://activiti.org/bpmn" activiti:delegateExpression="${moocDelegate}"></userTask>
+      <startEvent id="startevent6" name="Start"></startEvent>
+      <sequenceFlow id="flow139" sourceRef="startevent6" targetRef="usertask3"></sequenceFlow>
+      <sequenceFlow id="flow140" sourceRef="usertask3" targetRef="servicetask38"></sequenceFlow>
+    </subProcess>
+    <boundaryEvent id="boundarytimer5" name="Timer" attachedToRef="eventsubprocess7" cancelActivity="true">
+      <timerEventDefinition>
+        <timeDuration>PT5M</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <userTask id="usertask4" name="Driver responds status about arrival"></userTask>
+    <sequenceFlow id="flow145" sourceRef="usertask4" targetRef="exclusivegateway7"></sequenceFlow>
+    <startEvent id="messagestartevent12" name="Message start">
+      <messageEventDefinition messageRef="messageA5"></messageEventDefinition>
+    </startEvent>
+    <sequenceFlow id="flow153" sourceRef="messagestartevent12" targetRef="eventsubprocess3"></sequenceFlow>
+    <startEvent id="messagestartevent13" name="Message start">
+      <messageEventDefinition messageRef="startDriverResponse"></messageEventDefinition>
+    </startEvent>
+    <sequenceFlow id="flow154" sourceRef="messagestartevent13" targetRef="eventsubprocess6"></sequenceFlow>
+    <startEvent id="messagestartevent14" name="Message start">
+      <messageEventDefinition messageRef="messageA7"></messageEventDefinition>
+    </startEvent>
+    <sequenceFlow id="flow156" sourceRef="messagestartevent14" targetRef="eventsubprocess7"></sequenceFlow>
+    <sequenceFlow id="flow159" sourceRef="servicetask3" targetRef="waitAssingPackageAsNew"></sequenceFlow>
+    <sequenceFlow id="flow160" sourceRef="waitAssingPackageAsNew" targetRef="servicetask1"></sequenceFlow>
+    <sequenceFlow id="flow161" sourceRef="startevent1" targetRef="servicetask3"></sequenceFlow>
+    <receiveTask id="waitAssingPackageAsNew" name="Wait for status change to &quot;New&quot;"></receiveTask>
+    <sequenceFlow id="flow173" sourceRef="messagestartevent10" targetRef="servicetask12"></sequenceFlow>
+    <sequenceFlow id="flow174" sourceRef="servicetask12" targetRef="servicetask13"></sequenceFlow>
+    <startEvent id="messagestartevent15" name="Message start">
+      <messageEventDefinition messageRef="startPackagePickedupModule"></messageEventDefinition>
+    </startEvent>
+    <serviceTask id="servicetask41" name="Change package status to &quot;Pickuped up&quot;" activiti:delegateExpression="${changePackageStatusDelegate}"></serviceTask>
+    <sequenceFlow id="flow175" sourceRef="messagestartevent15" targetRef="servicetask41"></sequenceFlow>
+    <serviceTask id="servicetask42" name="Set Tracking Number for Package" activiti:delegateExpression="${packageTrackingNumberDelegate}"></serviceTask>
+    <serviceTask id="servicetask43" name="Send Push Notification to &quot;Customer&quot; &quot;Tracking Number&quot;" activiti:delegateExpression="${sendTrackingNumberNotificationDelegate}"></serviceTask>
+    <receiveTask id="WaitUntilPackageStatusChangedToCancelled" name="Wait until package status changed to Cancelled"></receiveTask>
+    <sequenceFlow id="flow178" sourceRef="servicetask21" targetRef="WaitUntilPackageStatusChangedToCancelled"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway14" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow179" sourceRef="WaitUntilPackageStatusChangedToCancelled" targetRef="exclusivegateway14"></sequenceFlow>
+    <endEvent id="endevent2" name="End"></endEvent>
+    <sequenceFlow id="flow180" sourceRef="exclusivegateway14" targetRef="endevent2">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!admin}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow181" sourceRef="exclusivegateway14" targetRef="servicetask20">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${admin}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow182" sourceRef="servicetask20" targetRef="endevent2"></sequenceFlow>
+    <receiveTask id="WaitUntilPackageStatusChangedToPickedUp" name="Wait Until Package Status Changed to PickedUp"></receiveTask>
+    <sequenceFlow id="flow183" sourceRef="servicetask41" targetRef="WaitUntilPackageStatusChangedToPickedUp"></sequenceFlow>
+    <sequenceFlow id="flow184" sourceRef="WaitUntilPackageStatusChangedToPickedUp" targetRef="servicetask42"></sequenceFlow>
+    <receiveTask id="waitUntilTrackingNumberAssigned" name="Wait Until Tracking Number Assigned"></receiveTask>
+    <sequenceFlow id="flow185" sourceRef="servicetask42" targetRef="waitUntilTrackingNumberAssigned"></sequenceFlow>
+    <sequenceFlow id="flow186" sourceRef="waitUntilTrackingNumberAssigned" targetRef="servicetask43"></sequenceFlow>
+    <serviceTask id="servicetask44" name="Send Push Notification to &quot;Customer&quot; &quot;Rating  Service&quot;" activiti:delegateExpression="${sendRatingServiceNotificationDelegate}"></serviceTask>
+    <sequenceFlow id="flow187" sourceRef="servicetask43" targetRef="servicetask44"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_myProcess">
+    <bpmndi:BPMNPlane bpmnElement="myProcess" id="BPMNPlane_myProcess">
+      <bpmndi:BPMNShape bpmnElement="servicetask10" id="BPMNShape_servicetask10">
+        <omgdc:Bounds height="63.0" width="156.0" x="263.0" y="1586.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask12" id="BPMNShape_servicetask12">
+        <omgdc:Bounds height="71.0" width="191.0" x="723.0" y="181.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask13" id="BPMNShape_servicetask13">
+        <omgdc:Bounds height="71.0" width="194.0" x="722.0" y="294.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="eventsubprocess1" id="BPMNShape_eventsubprocess1">
+        <omgdc:Bounds height="871.0" width="821.0" x="1550.0" y="225.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="1843.0" y="355.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway4" id="BPMNShape_exclusivegateway4">
+        <omgdc:Bounds height="40.0" width="40.0" x="1965.0" y="646.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask15" id="BPMNShape_servicetask15">
+        <omgdc:Bounds height="91.0" width="105.0" x="1835.0" y="726.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask16" id="BPMNShape_servicetask16">
+        <omgdc:Bounds height="70.0" width="136.0" x="1633.0" y="872.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent2" id="BPMNShape_startevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="1846.0" y="255.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask27" id="BPMNShape_servicetask27">
+        <omgdc:Bounds height="70.0" width="141.0" x="1630.0" y="527.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway8" id="BPMNShape_exclusivegateway8">
+        <omgdc:Bounds height="40.0" width="40.0" x="2135.0" y="835.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask28" id="BPMNShape_servicetask28">
+        <omgdc:Bounds height="70.0" width="136.0" x="2000.0" y="995.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask29" id="BPMNShape_servicetask29">
+        <omgdc:Bounds height="70.0" width="131.0" x="2190.0" y="895.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="waitNearByVehicles" id="BPMNShape_waitNearByVehicles">
+        <omgdc:Bounds height="64.0" width="118.0" x="1927.0" y="542.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="waitAssingPackageAsWaitingForCustomer" id="BPMNShape_waitAssingPackageAsWaitingForCustomer">
+        <omgdc:Bounds height="78.0" width="131.0" x="1822.0" y="868.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="receivetask3" id="BPMNShape_receivetask3">
+        <omgdc:Bounds height="55.0" width="105.0" x="1648.0" y="655.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask4" id="BPMNShape_servicetask4">
+        <omgdc:Bounds height="74.0" width="111.0" x="1930.0" y="435.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask39" id="BPMNShape_servicetask39">
+        <omgdc:Bounds height="66.0" width="141.0" x="1648.0" y="997.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="WaitForVehiclesToBeSaved" id="BPMNShape_WaitForVehiclesToBeSaved">
+        <omgdc:Bounds height="68.0" width="123.0" x="1835.0" y="996.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask14" id="BPMNShape_servicetask14">
+        <omgdc:Bounds height="63.0" width="141.0" x="1681.0" y="1125.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask20" id="BPMNShape_servicetask20">
+        <omgdc:Bounds height="71.0" width="165.0" x="440.0" y="940.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask21" id="BPMNShape_servicetask21">
+        <omgdc:Bounds height="71.0" width="165.0" x="442.0" y="645.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="messagestartevent8" id="BPMNShape_messagestartevent8">
+        <omgdc:Bounds height="35.0" width="35.0" x="507.0" y="562.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway7" id="BPMNShape_exclusivegateway7">
+        <omgdc:Bounds height="40.0" width="40.0" x="189.0" y="1501.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask22" id="BPMNShape_servicetask22">
+        <omgdc:Bounds height="67.0" width="156.0" x="1.0" y="1580.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask23" id="BPMNShape_servicetask23">
+        <omgdc:Bounds height="67.0" width="156.0" x="1.0" y="1684.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="eventsubprocess3" id="BPMNShape_eventsubprocess3">
+        <omgdc:Bounds height="371.0" width="415.0" x="1036.0" y="135.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway5" id="BPMNShape_exclusivegateway5">
+        <omgdc:Bounds height="40.0" width="40.0" x="1211.0" y="354.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask18" id="BPMNShape_servicetask18">
+        <omgdc:Bounds height="61.0" width="121.0" x="1061.0" y="394.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent4" id="BPMNShape_startevent4">
+        <omgdc:Bounds height="35.0" width="35.0" x="1214.0" y="154.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask2" id="BPMNShape_usertask2">
+        <omgdc:Bounds height="64.0" width="143.0" x="1160.0" y="235.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="callactivity1" id="BPMNShape_callactivity1">
+        <omgdc:Bounds height="71.0" width="105.0" x="1321.0" y="394.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundarytimer3" id="BPMNShape_boundarytimer3">
+        <omgdc:Bounds height="30.0" width="30.0" x="1040.0" y="125.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask25" id="BPMNShape_servicetask25">
+        <omgdc:Bounds height="55.0" width="105.0" x="1150.0" y="38.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="messagestartevent10" id="BPMNShape_messagestartevent10">
+        <omgdc:Bounds height="35.0" width="35.0" x="801.0" y="100.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="1752.0" y="48.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask3" id="BPMNShape_servicetask3">
+        <omgdc:Bounds height="74.0" width="111.0" x="1905.0" y="29.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask1" id="BPMNShape_servicetask1">
+        <omgdc:Bounds height="65.0" width="105.0" x="2200.0" y="33.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="messagestartevent1" id="BPMNShape_messagestartevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="1943.0" y="165.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask24" id="BPMNShape_servicetask24">
+        <omgdc:Bounds height="62.0" width="139.0" x="1054.0" y="1545.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="eventsubprocess6" id="BPMNShape_eventsubprocess6">
+        <omgdc:Bounds height="687.0" width="603.0" x="920.0" y="809.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent5" id="BPMNShape_startevent5">
+        <omgdc:Bounds height="35.0" width="35.0" x="1217.0" y="840.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask32" id="BPMNShape_servicetask32">
+        <omgdc:Bounds height="70.0" width="148.0" x="1328.0" y="1085.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask31" id="BPMNShape_servicetask31">
+        <omgdc:Bounds height="91.0" width="118.0" x="1343.0" y="1384.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway13" id="BPMNShape_exclusivegateway13">
+        <omgdc:Bounds height="40.0" width="40.0" x="1214.0" y="1002.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask35" id="BPMNShape_servicetask35">
+        <omgdc:Bounds height="91.0" width="105.0" x="1038.0" y="1085.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="WaitForAssingPackageAsActionNeeded" id="BPMNShape_WaitForAssingPackageAsActionNeeded">
+        <omgdc:Bounds height="72.0" width="105.0" x="1038.0" y="1204.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="WaitForAssingPackageAsAWaitingPickup" id="BPMNShape_WaitForAssingPackageAsAWaitingPickup">
+        <omgdc:Bounds height="89.0" width="105.0" x="1182.0" y="1385.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask40" id="BPMNShape_servicetask40">
+        <omgdc:Bounds height="74.0" width="126.0" x="1339.0" y="1275.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="waitUntilTheJobOrderAssignedtoDriver" id="BPMNShape_waitUntilTheJobOrderAssignedtoDriver">
+        <omgdc:Bounds height="55.0" width="122.0" x="1341.0" y="1185.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="waitForDriverResponse" id="BPMNShape_waitForDriverResponse">
+        <omgdc:Bounds height="65.0" width="171.0" x="1149.0" y="910.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundarytimer6" id="BPMNShape_boundarytimer6">
+        <omgdc:Bounds height="30.0" width="30.0" x="1140.0" y="950.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask45" id="BPMNShape_servicetask45">
+        <omgdc:Bounds height="55.0" width="105.0" x="960.0" y="920.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundarytimer4" id="BPMNShape_boundarytimer4">
+        <omgdc:Bounds height="30.0" width="30.0" x="990.0" y="1474.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="eventsubprocess7" id="BPMNShape_eventsubprocess7">
+        <omgdc:Bounds height="338.0" width="401.0" x="432.0" y="1395.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask38" id="BPMNShape_servicetask38">
+        <omgdc:Bounds height="77.0" width="156.0" x="542.0" y="1615.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask3" id="BPMNShape_usertask3">
+        <omgdc:Bounds height="65.0" width="123.0" x="558.0" y="1502.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent6" id="BPMNShape_startevent6">
+        <omgdc:Bounds height="35.0" width="35.0" x="602.0" y="1415.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundarytimer5" id="BPMNShape_boundarytimer5">
+        <omgdc:Bounds height="30.0" width="30.0" x="804.0" y="1395.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask4" id="BPMNShape_usertask4">
+        <omgdc:Bounds height="65.0" width="143.0" x="138.0" y="1405.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="messagestartevent12" id="BPMNShape_messagestartevent12">
+        <omgdc:Bounds height="35.0" width="35.0" x="1358.0" y="63.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="messagestartevent13" id="BPMNShape_messagestartevent13">
+        <omgdc:Bounds height="35.0" width="35.0" x="1430.0" y="735.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="messagestartevent14" id="BPMNShape_messagestartevent14">
+        <omgdc:Bounds height="35.0" width="35.0" x="530.0" y="1305.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="waitAssingPackageAsNew" id="BPMNShape_waitAssingPackageAsNew">
+        <omgdc:Bounds height="65.0" width="105.0" x="2060.0" y="33.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="messagestartevent15" id="BPMNShape_messagestartevent15">
+        <omgdc:Bounds height="35.0" width="35.0" x="522.0" y="1.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask41" id="BPMNShape_servicetask41">
+        <omgdc:Bounds height="82.0" width="127.0" x="476.0" y="77.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask42" id="BPMNShape_servicetask42">
+        <omgdc:Bounds height="67.0" width="131.0" x="476.0" y="287.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask43" id="BPMNShape_servicetask43">
+        <omgdc:Bounds height="81.0" width="135.0" x="476.0" y="460.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="WaitUntilPackageStatusChangedToCancelled" id="BPMNShape_WaitUntilPackageStatusChangedToCancelled">
+        <omgdc:Bounds height="67.0" width="151.0" x="447.0" y="748.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway14" id="BPMNShape_exclusivegateway14">
+        <omgdc:Bounds height="40.0" width="40.0" x="502.0" y="855.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent2" id="BPMNShape_endevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="587.0" y="858.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="WaitUntilPackageStatusChangedToPickedUp" id="BPMNShape_WaitUntilPackageStatusChangedToPickedUp">
+        <omgdc:Bounds height="65.0" width="139.0" x="472.0" y="189.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="waitUntilTrackingNumberAssigned" id="BPMNShape_waitUntilTrackingNumberAssigned">
+        <omgdc:Bounds height="55.0" width="105.0" x="489.0" y="375.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask44" id="BPMNShape_servicetask44">
+        <omgdc:Bounds height="73.0" width="118.0" x="290.0" y="464.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow33" id="BPMNEdge_flow33">
+        <omgdi:waypoint x="1883.0" y="375.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1985.0" y="375.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1985.0" y="435.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow68" id="BPMNEdge_flow68">
+        <omgdi:waypoint x="1863.0" y="290.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1863.0" y="355.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow69" id="BPMNEdge_flow69">
+        <omgdi:waypoint x="1843.0" y="375.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1700.0" y="375.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1700.0" y="527.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow75" id="BPMNEdge_flow75">
+        <omgdi:waypoint x="2005.0" y="666.0"></omgdi:waypoint>
+        <omgdi:waypoint x="2155.0" y="665.0"></omgdi:waypoint>
+        <omgdi:waypoint x="2155.0" y="835.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow76" id="BPMNEdge_flow76">
+        <omgdi:waypoint x="2135.0" y="855.0"></omgdi:waypoint>
+        <omgdi:waypoint x="2070.0" y="855.0"></omgdi:waypoint>
+        <omgdi:waypoint x="2068.0" y="995.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow77" id="BPMNEdge_flow77">
+        <omgdi:waypoint x="2175.0" y="855.0"></omgdi:waypoint>
+        <omgdi:waypoint x="2255.0" y="855.0"></omgdi:waypoint>
+        <omgdi:waypoint x="2255.0" y="895.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow78" id="BPMNEdge_flow78">
+        <omgdi:waypoint x="2255.0" y="965.0"></omgdi:waypoint>
+        <omgdi:waypoint x="2255.0" y="1011.0"></omgdi:waypoint>
+        <omgdi:waypoint x="2255.0" y="1029.0"></omgdi:waypoint>
+        <omgdi:waypoint x="2136.0" y="1030.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow96" id="BPMNEdge_flow96">
+        <omgdi:waypoint x="1986.0" y="606.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1985.0" y="646.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow97" id="BPMNEdge_flow97">
+        <omgdi:waypoint x="1965.0" y="666.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1888.0" y="666.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1887.0" y="726.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow98" id="BPMNEdge_flow98">
+        <omgdi:waypoint x="1887.0" y="817.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1887.0" y="868.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow99" id="BPMNEdge_flow99">
+        <omgdi:waypoint x="1822.0" y="907.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1769.0" y="907.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow100" id="BPMNEdge_flow100">
+        <omgdi:waypoint x="1700.0" y="597.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1700.0" y="655.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow95" id="BPMNEdge_flow95">
+        <omgdi:waypoint x="1985.0" y="509.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1986.0" y="542.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow166" id="BPMNEdge_flow166">
+        <omgdi:waypoint x="2000.0" y="1030.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1958.0" y="1030.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow167" id="BPMNEdge_flow167">
+        <omgdi:waypoint x="1835.0" y="1030.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1789.0" y="1030.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow41" id="BPMNEdge_flow41">
+        <omgdi:waypoint x="524.0" y="597.0"></omgdi:waypoint>
+        <omgdi:waypoint x="524.0" y="645.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow48" id="BPMNEdge_flow48">
+        <omgdi:waypoint x="229.0" y="1521.0"></omgdi:waypoint>
+        <omgdi:waypoint x="340.0" y="1521.0"></omgdi:waypoint>
+        <omgdi:waypoint x="341.0" y="1586.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow51" id="BPMNEdge_flow51">
+        <omgdi:waypoint x="189.0" y="1521.0"></omgdi:waypoint>
+        <omgdi:waypoint x="75.0" y="1520.0"></omgdi:waypoint>
+        <omgdi:waypoint x="79.0" y="1580.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow53" id="BPMNEdge_flow53">
+        <omgdi:waypoint x="79.0" y="1647.0"></omgdi:waypoint>
+        <omgdi:waypoint x="79.0" y="1684.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow38" id="BPMNEdge_flow38">
+        <omgdi:waypoint x="1211.0" y="374.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1119.0" y="374.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1121.0" y="394.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow111" id="BPMNEdge_flow111">
+        <omgdi:waypoint x="1231.0" y="189.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1231.0" y="235.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow112" id="BPMNEdge_flow112">
+        <omgdi:waypoint x="1231.0" y="299.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1231.0" y="354.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow113" id="BPMNEdge_flow113">
+        <omgdi:waypoint x="1251.0" y="374.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1368.0" y="374.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1373.0" y="394.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow63" id="BPMNEdge_flow63">
+        <omgdi:waypoint x="1055.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1054.0" y="65.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1150.0" y="65.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow67" id="BPMNEdge_flow67">
+        <omgdi:waypoint x="1960.0" y="200.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1960.0" y="225.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow110" id="BPMNEdge_flow110">
+        <omgdi:waypoint x="1090.0" y="1176.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1090.0" y="1204.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow142" id="BPMNEdge_flow142">
+        <omgdi:waypoint x="1343.0" y="1429.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1287.0" y="1429.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow164" id="BPMNEdge_flow164">
+        <omgdi:waypoint x="1254.0" y="1022.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1401.0" y="1022.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1402.0" y="1085.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow165" id="BPMNEdge_flow165">
+        <omgdi:waypoint x="1214.0" y="1022.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1091.0" y="1021.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1090.0" y="1085.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow170" id="BPMNEdge_flow170">
+        <omgdi:waypoint x="1402.0" y="1349.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1402.0" y="1384.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow171" id="BPMNEdge_flow171">
+        <omgdi:waypoint x="1402.0" y="1155.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1402.0" y="1185.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow172" id="BPMNEdge_flow172">
+        <omgdi:waypoint x="1402.0" y="1240.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1402.0" y="1275.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow188" id="BPMNEdge_flow188">
+        <omgdi:waypoint x="1234.0" y="875.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1234.0" y="910.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow189" id="BPMNEdge_flow189">
+        <omgdi:waypoint x="1234.0" y="975.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1234.0" y="1002.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow191" id="BPMNEdge_flow191">
+        <omgdi:waypoint x="1140.0" y="965.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1065.0" y="947.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow137" id="BPMNEdge_flow137">
+        <omgdi:waypoint x="1005.0" y="1504.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1004.0" y="1576.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1054.0" y="1576.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow139" id="BPMNEdge_flow139">
+        <omgdi:waypoint x="619.0" y="1450.0"></omgdi:waypoint>
+        <omgdi:waypoint x="619.0" y="1502.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow140" id="BPMNEdge_flow140">
+        <omgdi:waypoint x="619.0" y="1567.0"></omgdi:waypoint>
+        <omgdi:waypoint x="620.0" y="1615.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow145" id="BPMNEdge_flow145">
+        <omgdi:waypoint x="209.0" y="1470.0"></omgdi:waypoint>
+        <omgdi:waypoint x="209.0" y="1501.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow153" id="BPMNEdge_flow153">
+        <omgdi:waypoint x="1375.0" y="98.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1243.0" y="135.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow154" id="BPMNEdge_flow154">
+        <omgdi:waypoint x="1447.0" y="770.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1221.0" y="809.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow156" id="BPMNEdge_flow156">
+        <omgdi:waypoint x="547.0" y="1340.0"></omgdi:waypoint>
+        <omgdi:waypoint x="632.0" y="1395.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow159" id="BPMNEdge_flow159">
+        <omgdi:waypoint x="2016.0" y="66.0"></omgdi:waypoint>
+        <omgdi:waypoint x="2060.0" y="65.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow160" id="BPMNEdge_flow160">
+        <omgdi:waypoint x="2165.0" y="65.0"></omgdi:waypoint>
+        <omgdi:waypoint x="2200.0" y="65.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow161" id="BPMNEdge_flow161">
+        <omgdi:waypoint x="1787.0" y="65.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1905.0" y="66.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow173" id="BPMNEdge_flow173">
+        <omgdi:waypoint x="818.0" y="135.0"></omgdi:waypoint>
+        <omgdi:waypoint x="818.0" y="181.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow174" id="BPMNEdge_flow174">
+        <omgdi:waypoint x="818.0" y="252.0"></omgdi:waypoint>
+        <omgdi:waypoint x="819.0" y="294.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow175" id="BPMNEdge_flow175">
+        <omgdi:waypoint x="539.0" y="36.0"></omgdi:waypoint>
+        <omgdi:waypoint x="539.0" y="77.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow178" id="BPMNEdge_flow178">
+        <omgdi:waypoint x="524.0" y="716.0"></omgdi:waypoint>
+        <omgdi:waypoint x="522.0" y="748.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow179" id="BPMNEdge_flow179">
+        <omgdi:waypoint x="522.0" y="815.0"></omgdi:waypoint>
+        <omgdi:waypoint x="522.0" y="855.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow180" id="BPMNEdge_flow180">
+        <omgdi:waypoint x="542.0" y="875.0"></omgdi:waypoint>
+        <omgdi:waypoint x="587.0" y="875.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow181" id="BPMNEdge_flow181">
+        <omgdi:waypoint x="522.0" y="895.0"></omgdi:waypoint>
+        <omgdi:waypoint x="522.0" y="940.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow182" id="BPMNEdge_flow182">
+        <omgdi:waypoint x="605.0" y="975.0"></omgdi:waypoint>
+        <omgdi:waypoint x="678.0" y="972.0"></omgdi:waypoint>
+        <omgdi:waypoint x="678.0" y="875.0"></omgdi:waypoint>
+        <omgdi:waypoint x="622.0" y="875.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow183" id="BPMNEdge_flow183">
+        <omgdi:waypoint x="539.0" y="159.0"></omgdi:waypoint>
+        <omgdi:waypoint x="541.0" y="189.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow184" id="BPMNEdge_flow184">
+        <omgdi:waypoint x="541.0" y="254.0"></omgdi:waypoint>
+        <omgdi:waypoint x="541.0" y="287.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow185" id="BPMNEdge_flow185">
+        <omgdi:waypoint x="541.0" y="354.0"></omgdi:waypoint>
+        <omgdi:waypoint x="541.0" y="375.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow186" id="BPMNEdge_flow186">
+        <omgdi:waypoint x="541.0" y="430.0"></omgdi:waypoint>
+        <omgdi:waypoint x="543.0" y="460.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow187" id="BPMNEdge_flow187">
+        <omgdi:waypoint x="476.0" y="500.0"></omgdi:waypoint>
+        <omgdi:waypoint x="408.0" y="500.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

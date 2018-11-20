@@ -1,0 +1,42 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+    
+server:
+  port: 0
+  
+oauth2:
+  tokenServiceEndpointUrl: http://localhost:60700/u/oauth/check_token
+  clientId: WEB
+  clientSecret: WEB   
+  
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/lastmile
+    username: postgres
+    password: root
+  application:
+    name: MANUALDISTRIBUTION
+  couchbase:
+    bootstrap-hosts: localhost
+    bucket:
+      name: vehicle_tracking
+  data:
+    couchbase:
+      auto-index: true
+      
+      
+  
+
+kafka:
+  bootstrap:
+    servers: localhost:9092
+
+    
+  
+logging:
+  file: ManualDistribution.log    

@@ -1,0 +1,18 @@
+server:
+  port: 0
+  
+services:
+  url : http://localhost:60500
+
+kafka:
+  bootstrap:
+    servers: localhost:9092 
+  
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/lastmile_workflow
+    username: postgres
+    password: root
+  jpa:
+    show-sql: true 

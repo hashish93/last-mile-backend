@@ -1,0 +1,48 @@
+kafka:
+  bootstrap:
+    servers: 192.168.88.90:9092
+  
+  
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.88.90:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}  
+        
+server:
+  port: 0
+ 
+oauth2:
+  tokenServiceEndpointUrl: http://192.168.88.90:60700/u/oauth/check_token
+  clientId: WEB
+  clientSecret: WEB  
+  
+spring:
+  application:
+    name: PUSHNOTIFICATION
+#  couchbase: 
+#    bootstrap-hosts: localhost
+#    bucket:
+#      name: vehicle_tracking
+#  data:
+#    couchbase:
+#      auto-index: true
+
+
+couchbase:
+  host: 192.168.88.90
+  bucket: vehicle_tracking
+  anotherBucket: customer_app_firebase_token
+
+firebase:
+  server-key: AAAAUywRnu4:APA91bHsOW0u6gLWK3ZzbwAMl8Z3UWKNh8gHdW4avvt_4ZFjMadtpQHd0NuJMZi13mh-Ll3AzhlHh-gVa8w7MCFa2UhL99o7EPg2QBglHcUR_NLKt7wZZbjsYPcIL8xN6Z1y5ci9QoQy4AOCiseOHfElQc_6fz-S-A
+    
+logging:
+  file: PushNotification.log    
+  
+notification:
+  android-type: android
+  ios-type: ios
+  default-type: android
+  retreis-count: 3 

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html style="padding: 0;margin: 0;font-size: 17px;line-height: 20px;">
+<head>
+    <title>mail templete</title>
+</head>
+<body style="padding: 0;margin: 0;font-size: 17px;line-height: 15px;">
+<div>
+    <img style=" display: block;margin-left: auto;margin-right: auto;max-width: 700px;" alt="header" src="https://image.ibb.co/f9f6qF/header.png"/>
+    <div style="margin-top: 50px; margin-left: auto;margin-right: auto;max-width: 700px;">
+        <p>
+            <strong style="color: #1a1a1a;">Congratulations !</strong> Now you can access LM Driver App using these Credentials
+        </p>
+        <p>
+            user name - <span th:text='${UserName}'></span>
+        </p>
+        <p>
+            password <span th:text='${Password}'> </span>
+        </p>
+        <br/>
+        <p style="line-height: 26px;">
+            your privacy is very important to us . if you have any questions or complaints regarding this email , you can contact us at
+            <a href="mailto:lastmilesupport@appzoneltd.com">lastmilesupport@appzoneltd.com</a>
+        </p>
+        <div style="margin-left: auto;margin-right: auto;max-width: 700px;height: 200px;background:#2c3d4d">
+            <table style="color:#fff;width:100%;">
+                <tr>
+                    <td style="line-height:20px;padding:10px;text-align:left;">
+                    </td>
+                    <td style="line-height: 20px;padding: 10px;text-align:right;">
+                        <img style="display: inline-block;max-width:300px;margin-right: 30px;" src="https://image.ibb.co/deJZAF/logo.png"/>
+                        <div style="padding-right: 30px;margin-top: 20px;">
+                            <a style="width: 31px;height: 31px;display:inline-block;" href="#"><img src="https://image.ibb.co/jZfgqF/facebook.png"/></a>
+                            <a style="width: 31px;height: 31px;display:inline-block;" href="#"><img src="https://image.ibb.co/dzNGPa/gplus.png"/></a>
+                            <a style="width: 31px;height: 31px;display:inline-block;" href="#"><img src="https://image.ibb.co/fh0gqF/linkedin.png"/></a>
+                            <a style="width: 31px;height: 31px;display:inline-block;" href="#"><img src="https://image.ibb.co/ihrMqF/twitter.png"/></a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

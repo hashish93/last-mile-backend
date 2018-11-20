@@ -1,0 +1,1 @@
+ALTER TABLE lastmile_request.nearby_vehicle ALTER COLUMN response TYPE varchar (100);

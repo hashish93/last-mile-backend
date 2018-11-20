@@ -1,0 +1,185 @@
+server:
+  port: 8080
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.jks
+    key-store-password: appzone
+    key-password: appzone
+    
+    key-alias: lastmile
+
+spring:
+  application:
+    name: ZUULSERVE
+
+zuul:
+  host:
+    max-per-route-connections: 500
+    max-total-connections: 1000
+   # socket-timeout-millis: 30000
+    
+  semaphore:
+    max-semaphores: 1000
+  ignored-services: '*'
+  add-proxy-headers: true
+  routes:
+    PACKAGES:
+      path: /packages/**
+      serviceId: PACKAGES
+    VEHICLES:
+      path: /vehicles/**
+      serviceId: VEHICLES
+    employee:
+      path: /employee/**
+      serviceId: employee
+    BUILDING:
+      path: /building/**
+      serviceId: BUILDING
+    userinfo:
+      path: /userinfo/**
+      serviceId: userinfo
+    ondemandrequest:
+      path: /ondemandrequest/**
+      serviceId: ondemandrequest
+    LOOKUPS:
+      path: /lookups/**
+      serviceId: LOOKUPS
+    LOOKUP-SERVICES:
+      path: /lookupservice/**
+      serviceId: LOOKUP-SERVICES  
+    SYSTEMCONFIGURATION:
+      path: /configuration/**
+      serviceId: SYSTEMCONFIGURATION
+    AVAILVEHICLES:
+      path: /availvehicles/**
+      serviceId: AVAILVEHICLES
+    PICKUPREQUEST:
+      path: /pickuprequest/**
+      serviceId: PICKUPREQUEST
+    SCHEDULEDREQUEST:
+      path: /scheduledrequest/**
+      service-id: SCHEDULEDREQUEST
+    DRIVERINFO:
+      path: /driverinfo/**
+      service-id: DRIVERINFO
+    TRACKINGTRUCK:
+      path: /trackingtruck/**
+      service-id: TRACKINGTRUCK
+    PUSHNOTIFICATION:
+      path: /pushnotification/**
+      service-id: GCMPUSHNOTIFICATION
+    OAUTHSERVER:
+      sensitiveHeaders: Cookie,Set-Cookie,Authorization
+      path: /u/**
+      serviceId: OAUTHSERVER
+      stripPrefix: false
+    CUSTOMER:
+      path: /customer/**
+      service-id: CUSTOMER
+    REQUESTDRAFT:
+      path: /requestdraft/**
+      service-id: REQUESTDRAFT
+    PICKUPHISTORY:
+      path: /pickuphistory/**
+      service-id: PICKUPHISTORY
+    SEARCHTOPIC:
+      path: /searchtopic/**
+      service-id: SEARCHTOPIC
+    VEHICLEREGISTRATION:
+      path: /vehicleregister/**
+      service-id: VEHICLEREGISTRATION
+    PRIVILEGES:
+      path: /privilege/**
+      service-id: PRIVILEGE
+    DEVICES:
+      path: /device/**
+      service-id: DEVICES
+    CALENDAR:
+      path: /calendar/**
+      service-id: CALENDAR
+    WORKSHIFT:
+      path: /workshift/**
+      service-id: WORKSHIFT
+    ACTIVEVEHICLE:
+      path: /activevehicle/**
+      service-id: ACTIVEVEHICLE
+    PACKAGEWEIGHT:
+      path: /packagweight/**
+      service-id: PACKAGEWEIGHT
+    DRIVERAUTHORIZATIONSERVER:
+      sensitiveHeaders: Cookie,Set-Cookie,Authorization
+      path: /d/**
+      serviceId: DRIVERAUTHORIZATIONSERVER
+      stripPrefix: false
+    DRIVER-REQUESTANDPACKAGEDETAILS:
+      path: /driverRequestAndPackageDetail/**
+      service-id: DRIVER-REQUESTANDPACKAGEDETAILS
+    MANUALDISTRIBUTION:
+      path: /manauldistribution/**
+      service-id: MANUALDISTRIBUTION
+    DELIVERY:
+      path: /delivery/**
+      service-id: DELIVERY
+    DISTRIBUTIONPLAN:
+      path: /distributionplan/**
+      service-id: DISTRIBUTIONPLAN
+    RETURN:
+      path: /return/**
+      service-id: RETURN
+    FAQ:
+        path: /faq/**
+        service-id: FAQ
+    FORGETPASSWORD:
+      path: /forgetPassword/**
+      service-id: FORGETPASSWORD
+    WORKFLOWSERVICE:
+      path: /workflowservice/**
+      service-id: WORKFLOWSERVICE
+    DELIVERYWORKFLOW:
+      path: /deliveryworkflow/**
+      service-id: DELIVERYWORKFLOW
+    RETURNWORKFLOW:
+      path: /returnworkflow/**
+      service-id: RETURNWORKFLOW 
+    FREELANCERDRIVER:
+      path: /freelancerdriver/**
+      service-id: FREELANCERDRIVER
+    OFFLOADING-ACTIVITIES:
+      path: /offloading/**
+      service-id: OFFLOADING-ACTIVITIES
+
+    STATISTICSANDREPORTS:
+      path: /statistcsAndReports/**
+      service-id: STATISTICSANDREPORTS
+      
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: false
+        isolation:
+          strategy: THREAD
+          thread:
+            timeoutInMilliseconds: 60000
+          semaphore: 
+            maxConcurrentRequests: 1000
+      circuitBreaker: 
+        enabled: false
+        
+ribbon:
+  ReadTimeout: 60000
+  ConnectTimeout: 1000
+  maxAutoRetries: 1
+  MaxAutoRetriesNextServer: 1
+          
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${server.port}}
+    
+    
+logging:
+  file: ZuulServer.log

@@ -1,0 +1,1 @@
+{"personalizations": [{"to": [{"email": "$to"}]}],"from": {"email": "$from"},"subject": "$subject","content": [{"type": "text/html", "value": "$body"}]}

@@ -1,0 +1,32 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+server:
+  port: 0
+
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/lastmile
+    username: postgres
+    password: root
+  data:
+      cassandra:
+        keyspace-name: lastmile
+#        contact-points: 192.168.1.105
+#        port: 9042
+  application:
+    name: FAQ
+  jpa:
+    show-sql: false
+    database: default
+
+oauth2:
+  tokenServiceEndpointUrl: http://localhost:60700/u/oauth/check_token
+  clientId: WEB
+  clientSecret: WEB

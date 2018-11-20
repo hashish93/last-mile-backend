@@ -1,0 +1,5 @@
+INSERT INTO lastmile_core.system_config(config_id, value, displayname, description, status, version, unit)VALUES (9, '1', 'LATE_TIME_INTERVAL', 'C_LATE_TIME_INTERVAL_DESC', 'ACTIVE',0,'MINS'); 
+INSERT INTO lastmile_core.system_config(config_id, value, displayname, description, status, version, unit)VALUES (10, '1', 'EARLY_TIME_INTERVAL', 'C_EARLY_TIME_INTERVAL_DESC', 'ACTIVE',0,'MINS');
+INSERT INTO lastmile_core.system_config(config_id, value, displayname, description, status, version, unit,config_type)VALUES (11, '30', 'START_TIME_INCREMENT_FACTOR', 'C_START_TIME_INCREMENT_FACTOR_DESC', 'ACTIVE',0,'MINS','DISTRIBUTION');
+INSERT INTO lastmile_core.system_config(config_id, value, displayname, description, status, version, unit,config_type)VALUES (12, '30', 'REQUEST_PROCCESSING_TIME', 'C_REQUEST_PROCCESSING_TIME_DESC', 'ACTIVE',0,'MINS','DISTRIBUTION');
+INSERT INTO lastmile_core.system_config(config_id, value, displayname, description, status, version, unit,config_type)VALUES (13, '30', 'GRACE_PERIOD_TIME', 'C_GRACE_PERIOD_TIME_DESC', 'ACTIVE',0,'MINS','DISTRIBUTION');

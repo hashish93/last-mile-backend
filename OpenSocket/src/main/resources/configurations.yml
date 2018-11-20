@@ -1,0 +1,17 @@
+kafka: 
+ bootstrap.servers: localhost:9092
+ topic: open-socket
+ group.id: open-socket-group
+ enable.auto.commit: "true"
+
+
+couchbase: 
+ node: localhost
+ bucket: vehicle_tracking
+
+
+
+thread.sleep: 0
+development: true
+
+server.id: 1

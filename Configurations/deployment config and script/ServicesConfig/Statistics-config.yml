@@ -1,0 +1,47 @@
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.88.90:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+    
+    
+    
+server:
+  port: 0
+  
+
+oauth2:
+  tokenServiceEndpointUrl: http://192.168.88.90:60700/u/oauth/check_token
+  clientId: WEB
+  clientSecret: WEB
+       
+datasource:
+  db_lastmile:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://192.168.88.90:5432/lastmile
+    username: postgres
+    password: root
+  db_lastmile_reporting:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://192.168.88.90:5432/lastmile_reporting
+    username: postgres
+    password: root
+
+   
+kafka:
+  bootstrap:
+    servers: 192.168.88.90:9092
+spring:
+  application:
+    name:  STATISTICSANDREPORTS
+  jpa:
+     show-sql: false
+     database: default
+     hibernate:
+       use-new-id-generator-mappings: false
+     open-in-view: false
+    
+

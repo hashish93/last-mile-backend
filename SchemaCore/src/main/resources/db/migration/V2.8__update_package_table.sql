@@ -1,0 +1,1 @@
+ALTER TABLE lastmile_core."package" ADD COLUMN tracking_number character varying(100);

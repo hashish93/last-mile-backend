@@ -1,0 +1,2 @@
+INSERT INTO lastmile_core.building_type(building_type_id, type,version) VALUES (3,'Operation Center', 0);
+INSERT INTO lastmile_core.building_type(building_type_id, type,version) VALUES (4,'Sorting Office', 0);

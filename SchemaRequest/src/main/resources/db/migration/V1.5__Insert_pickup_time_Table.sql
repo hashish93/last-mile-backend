@@ -1,0 +1,2 @@
+INSERT INTO pickup_time (pickup_time_id, time_from, time_to, version) VALUES (1, '2:00 PM', '5:00 PM', 0);
+INSERT INTO pickup_time (pickup_time_id, time_from, time_to, version) VALUES (2, '4:00 PM', '8:00 PM', 0);

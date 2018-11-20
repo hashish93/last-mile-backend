@@ -1,0 +1,28 @@
+server:
+  port: 0
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/lastmile
+    username: postgres
+    password: root
+  jpa:
+    database: default
+    show-sql: false     
+  application:
+    name: PRIVILEGE
+
+  
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+oauth2:
+  tokenServiceEndpointUrl: http://localhost:60700/u/oauth/check_token
+  clientId: WEB
+  clientSecret: WEB 
+  

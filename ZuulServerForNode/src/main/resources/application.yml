@@ -1,0 +1,54 @@
+server:
+  port: 8888
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.jks
+    key-store-password: appzone
+    key-password: appzone
+    
+    key-alias: lastmile
+    
+spring:
+  application:
+    name: ZUULSERVERFORSTATIC
+
+zuul:
+  host:
+    max-per-route-connections: 500
+    max-total-connections: 1000
+   # socket-timeout-millis: 30000
+  semaphore:
+    max-semaphores: 1000
+  ignored-services: '*'
+  add-proxy-headers: true
+  routes:
+    LASTMILEWEBAPPLICATION:
+      path: /lastmile/**
+      url: https://192.168.1.241:3000/
+      
+         
+    
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: false
+        isolation:
+          strategy: THREAD
+          thread:
+            timeoutInMilliseconds: 60000
+          semaphore: 
+            maxConcurrentRequests: 1000
+      circuitBreaker: 
+        enabled: false
+        
+ribbon:
+  ReadTimeout: 60000
+  ConnectTimeout: 3000
+  maxAutoRetries: 1
+  MaxAutoRetriesNextServer: 1
+    
+    
+logging:
+  file: ZuulServerForNode.log 

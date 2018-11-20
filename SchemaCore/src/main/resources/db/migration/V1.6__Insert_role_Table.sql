@@ -1,0 +1,1 @@
+--INSERT INTO lastmile_authorization_server.roles(role_id, rolename,iseditable, description, version, enabled)VALUES (0,'Anonymous Role',TRUE,'Anonymous Role', 0, TRUE);

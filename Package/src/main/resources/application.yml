@@ -1,0 +1,39 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.88.67:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+    
+server:
+  port: 0
+  
+oauth2:
+  tokenServiceEndpointUrl: http://192.168.88.67:60700/u/oauth/check_token
+  clientId: WEB
+  clientSecret: WEB   
+  
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://192.168.88.67:5432/lastmile
+    username: postgres
+    password: root
+  application:
+    name: PACKAGES
+  jpa:
+    show-sql: true
+    database: default
+
+kafka:
+  bootstrap:
+    servers: 192.168.88.67:9092 
+jsondoc:
+  version:
+      1.0
+  basePath:
+      /packages
+  packages[0]:
+      com.appzoneltd.lastmile.microservice.packge.controller
+  packages[1]:
+      com.appzoneltd.lastmile.microservice.packge.dao   

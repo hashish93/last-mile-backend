@@ -1,0 +1,52 @@
+server:
+  port: 0
+  
+  
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/lastmile
+    username: postgres
+    password: root
+  application:
+    name: SHIPMENTSERVICE
+  jpa:
+    show-sql: true
+    database: default 
+    hibernate:
+      use-new-id-generator-mappings: false
+    open-in-view: false
+
+
+
+oauth2:
+  tokenServiceEndpointUrl: http://localhost:60700/u/oauth/check_token
+  clientId: WEB
+  clientSecret: WEB
+logging:
+  file: ShipmentService.log
+  level:
+    com.appzoneltd.lastmile.microservice.shipmentservice.service: error
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+#security:
+#  basic:
+#    enabled: false
+#  oauth2:
+#    resource:
+#      userInfoUri: http://localhost:8080/u/user
+    
+jsondoc:
+  version:
+      1.0
+  basePath:
+      /shipmentservice
+  packages[0]:
+      com.appzoneltd.lastmile.microservice.shipmentservice.controller
+  packages[1]:
+      com.appzoneltd.lastmile.microservice.shipmentservice.dao

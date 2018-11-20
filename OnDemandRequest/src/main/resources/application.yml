@@ -1,0 +1,17 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+jsondoc:
+  version:
+      1.0
+  basePath:
+      /ondemandrequest
+  packages[0]:
+      com.appzoneltd.lastmile.microservice.ondemandrequest.service
+  packages[1]:
+      com.appzoneltd.lastmile.microservice.ondemandrequest.model
+  packages[2]:
+      com.appzoneltd.lastmile.microservice.ondemandrequest.json        

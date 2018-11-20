@@ -1,0 +1,1 @@
+INSERT INTO users (user_id, username, password, firstname, lastname, phone, email, enabled, personal_photo_id, status, description, version, user_type) VALUES (1, 'superadmin', 'appzone', 'superadmin', 'superadmin', '0100100', 'superadmin@mail.com', true, NULL, 'ACTIVE', NULL, 0, 'BACK_OFFICE_EMPLOYEE');

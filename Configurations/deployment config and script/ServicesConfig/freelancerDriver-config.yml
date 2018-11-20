@@ -1,0 +1,50 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+    
+
+
+server:
+  port: 0
+
+oauth2:
+  tokenServiceEndpointUrl: http://localhost:60700/u/oauth/check_token
+  clientId: WEB
+  clientSecret: WEB   
+  
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/lastmile
+    username: postgres
+    password: root
+  application:
+    name: FREELANCERDRIVER
+  jpa:
+    show-sql: true
+    database: default 
+    hibernate:
+      use-new-id-generator-mappings: false
+    open-in-view: false
+
+      
+kafka:
+  bootstrap:
+    servers: localhost:9092
+
+
+missing_documents:
+  birth_certificate_checked: https://image.ibb.co/hZajYk/birth_Certificate_checked.png
+  criminalrecord_checked: https://image.ibb.co/kpKEzQ/criminal_Record_checked.png
+  national_id_checked: https://image.ibb.co/dmUKYk/personalid_checked.png
+  vehicleownership_id_checked: https://image.ibb.co/kjTUYk/vehicle_Ownership_checked.png
+  birth_certificate_unchecked: https://image.ibb.co/fT3JR5/birth_Certificate_unchecked.png
+  criminalrecord_unchecked: https://image.ibb.co/eMAttk/criminal_Record_unchecked.png
+  national_id_unchecked: https://image.ibb.co/gHkXm5/personalid_unchecked.png
+  vehicleownership_id_unchecked: https://image.ibb.co/csd7KQ/vehicle_Ownership_unchecked.png
+
+logging:
+  file: FreelancerDriver.log

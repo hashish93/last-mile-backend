@@ -1,0 +1,18 @@
+
+server:
+  port: 0
+  
+  
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://192.168.1.241:5432/administration
+    username: postgres
+    password: root
+  application:
+    name: PICKUPHISTORY
+   
+oauth2:
+  tokenServiceEndpointUrl: http://localhost:60700/u/oauth/check_token
+  clientId: WEB
+  clientSecret: WEB    

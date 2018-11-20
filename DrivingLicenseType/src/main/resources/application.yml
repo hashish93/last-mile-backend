@@ -1,0 +1,40 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+    
+jsondoc:
+  version:
+      1.0
+  basePath:
+      /driverlicensetype
+  packages[0]:
+      com.appzoneltd.lastmile.microservice.drivinglicensetype.controller
+  packages[1]:
+      com.appzoneltd.lastmile.microservice.drivinglicensetype.dao
+   
+server:
+  port: 0
+  
+oauth2:
+  tokenServiceEndpointUrl: http://localhost:60700/u/oauth/check_token
+  clientId: WEB
+  clientSecret: WEB 
+  
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/lastmile
+    username: postgres
+    password: root
+  application:
+    name: DRIVERLICENCETYPE
+   
+logging:
+  file: DriverLicenseType.log
+  level:
+    com.appzoneltd.lastmile.microservice.DriverLicenseType.service: error
+    com.appzoneltd.lastmile.microservice.DriverLicenseType.dao: error   

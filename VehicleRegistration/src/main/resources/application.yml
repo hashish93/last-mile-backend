@@ -1,0 +1,45 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.88.90:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+    
+#security:
+#  basic:
+#    enabled: false
+#  oauth2:
+#    resource:
+#      userInfoUri: http://192.168.88.90:8080/u/user    
+
+server:
+  port: 10590
+  
+spring:
+  application:
+    name: VEHICLEREGISTRATION
+  datasource:
+    url: jdbc:postgresql://192.168.88.90:5432/lastmile
+    username: postgres
+    password: root
+  jpa:
+   show-sql: false
+   database: default 
+   hibernate:
+     use-new-id-generator-mappings: false
+   open-in-view: false
+  couchbase:
+    bootstrap-hosts: 192.168.88.90
+    bucket:
+      name: vehicle_tracking
+  data:
+    couchbase:
+      auto-index: true
+
+oauth2:
+  tokenServiceEndpointUrl: http://192.168.88.90:60701/d/oauth/check_token
+  clientId: DRIVER
+  clientSecret: DRIVER      
+  
+logging:
+  file: VehicleRegistration.log

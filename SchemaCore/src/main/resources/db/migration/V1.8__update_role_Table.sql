@@ -1,0 +1,1 @@
+--UPDATE lastmile_authorization_server.roles SET iseditable=FALSE WHERE role_id=0;

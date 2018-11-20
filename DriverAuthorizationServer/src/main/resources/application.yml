@@ -1,0 +1,29 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+    
+    
+    
+server:
+  port: 60701
+  context-path: /d
+
+spring:
+  application:
+    name: DRIVERAUTHORIZATIONSERVER
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/lastmile
+    username: postgres
+    password: root
+    
+logging:
+ file: DriverAuthorizationServer.log
+
+
+kafka:
+  bootstrap:
+    servers: localhost:9092    

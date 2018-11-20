@@ -1,0 +1,43 @@
+server:
+  port: 0
+  id: 1
+  
+kafka:
+  bootstrap:
+    servers: localhost:9092
+  topic: open-socket
+ 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+  
+spring:
+  application:
+    name: SEARCHTOPIC
+  couchbase: 
+    bootstrap-hosts: localhost
+    bucket:
+      name: search_topic
+  data:
+    couchbase:
+      auto-index: true
+      
+oauth2:
+  tokenServiceEndpointUrl: http://localhost:60700/u/oauth/check_token
+  clientId: WEB
+  clientSecret: WEB      
+      
+logging:
+  file: CreateSearchTopic.log
+  level:
+    com.appzoneltd.lastmile.microservice.createsearchtopic.service: error
+    com.appzoneltd.lastmile.microservice.createsearchtopic.controller: error
+        
+jsondoc:
+  version: 1.0
+  basePath: /searchtopic
+  packages[0]: com.appzoneltd.lastmile.microservice.createsearchtopic.controller
+  packages[1]: com.appzoneltd.lastmile.microservice.createsearchtopic.dao

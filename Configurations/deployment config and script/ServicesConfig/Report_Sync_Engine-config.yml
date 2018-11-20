@@ -1,0 +1,44 @@
+server:
+  port: 0
+
+kafka:
+  bootstrap:
+    servers: localhost:9092
+
+datasource:
+  db_lastmile:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/lastmile
+    username: postgres
+    password: root
+  db_lastmile_reporting:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/lastmile_reporting
+    username: postgres
+    password: root
+
+spring:
+#  datasource:
+#    driver-class-name: org.postgresql.Driver
+#    url: jdbc:postgresql://192.168.88.90:5432/lastmile_reporting
+#    username: postgres
+#    password: root
+  jpa:
+    database: default
+    show-sql: false     
+  application:
+    name: SYNC_ENGINE
+
+  
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+oauth2:
+  tokenServiceEndpointUrl: http://localhost:60700/u/oauth/check_token
+  clientId: WEB
+  clientSecret: WEB 
+  

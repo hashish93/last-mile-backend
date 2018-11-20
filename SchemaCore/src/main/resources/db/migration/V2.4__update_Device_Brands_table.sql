@@ -1,0 +1,13 @@
+INSERT INTO lastmile_core.device_brand(id, brandname)VALUES (2, 'Alcatel');
+INSERT INTO lastmile_core.device_brand(id, brandname)VALUES (3, 'Apple Inc');
+INSERT INTO lastmile_core.device_brand(id, brandname)VALUES (4, 'Hisense');
+INSERT INTO lastmile_core.device_brand(id, brandname)VALUES (5, 'Huawei');
+INSERT INTO lastmile_core.device_brand(id, brandname)VALUES (6, 'Lenovo');
+INSERT INTO lastmile_core.device_brand(id, brandname)VALUES (7, 'LG');
+INSERT INTO lastmile_core.device_brand(id, brandname)VALUES (8, 'Motorola');
+INSERT INTO lastmile_core.device_brand(id, brandname)VALUES (9, 'Nokia');
+INSERT INTO lastmile_core.device_brand(id, brandname)VALUES (10,'OnePlus');
+INSERT INTO lastmile_core.device_brand(id, brandname)VALUES (11, 'Oppo');
+INSERT INTO lastmile_core.device_brand(id, brandname)VALUES (12, 'Samsung');
+INSERT INTO lastmile_core.device_brand(id, brandname)VALUES (13, 'Sony Ericsson');
+INSERT INTO lastmile_core.device_brand(id, brandname)VALUES (14, 'ZTE');

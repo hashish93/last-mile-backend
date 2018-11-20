@@ -1,0 +1,55 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+    
+jsondoc:
+  version:
+      1.0
+  basePath:
+      /activevehicle
+  packages[0]:
+      com.appzoneltd.lastmile.microservice.activevehicle.controller
+  packages[1]:
+      com.appzoneltd.lastmile.microservice.activevehicle.dao
+  packages[2]:
+      com.appzoneltd.lastmile.microservice.activevehicle.dto     
+      
+server:
+  port: 0
+ 
+oauth2:
+  tokenServiceEndpointUrl: http://localhost:60700/u/oauth/check_token
+  clientId: WEB
+  clientSecret: WEB  
+  
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/lastmile
+    username: postgres
+    password: root
+  application:
+    name: ACTIVEVEHICLE
+  jpa:
+   show-sql: false
+   database: default
+   hibernate:
+     use-new-id-generator-mappings: false
+   open-in-view: false
+  couchbase:
+    bootstrap-hosts: localhost
+    bucket:
+      name: vehicle_tracking
+  data:
+    couchbase:
+      auto-index: true
+    cassandra:
+      keyspace-name: lastmile
+#      contact-points: 192.168.1.105
+#      port: 9042
+
+
+logging:
+  file: Active-Vehicle.log

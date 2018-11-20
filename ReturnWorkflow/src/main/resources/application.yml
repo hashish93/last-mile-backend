@@ -1,0 +1,28 @@
+server:
+  port: 0
+kafka:
+  bootstrap:
+    servers: localhost:9092
+
+datasource:
+  db_lastmile:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/lastmile
+    username: postgres
+    password: root
+  db_workflow:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/return_workflow
+    username: postgres
+    password: root
+    
+spring:
+  application:
+    name: RETURNWORKFLOW
+  couchbase:
+    bootstrap-hosts: localhost
+    bucket:
+      name: vehicle_tracking
+  data:
+    couchbase:
+      auto-index: true

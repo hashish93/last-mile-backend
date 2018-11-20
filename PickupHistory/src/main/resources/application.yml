@@ -1,0 +1,16 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+    
+jsondoc:
+  version:
+      1.0
+  basePath:
+      /pickuphistory
+  packages[0]:
+      com.appzoneltd.lastmile.microservice.pickuphistory.controller
+  packages[1]:
+     com.appzoneltd.lastmile.microservice.pickuphistory.model

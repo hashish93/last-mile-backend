@@ -1,0 +1,34 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+server:
+  port: 0
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/lastmile
+    username: postgres
+    password: root
+  application:
+    name: PICKUPTIME
+   
+logging:
+  file: PickupTime.log
+  level:
+    com.appzoneltd.lastmile.microservice.pickuptime.service: error
+    com.appzoneltd.lastmile.microservice.pickuptime.controller: error
+    
+jsondoc:
+  version:
+      1.0
+  basePath:
+      /pickuptime
+  packages[0]:
+      com.appzoneltd.lastmile.microservice.pickuptime.controller
+  packages[1]:
+      com.appzoneltd.lastmile.microservice.pickuptime.dao

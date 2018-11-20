@@ -1,0 +1,40 @@
+server:
+  port: 0
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://192.168.88.90:5432/lastmile
+    username: postgres
+    password: root
+  jpa:
+    database: default
+    show-sql: true     
+  application:
+    name: employee
+
+  
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.88.90:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+oauth2:
+  tokenServiceEndpointUrl: http://192.168.88.90:60700/u/oauth/check_token
+  clientId: WEB
+  clientSecret: WEB
+    
+send_email:
+  from: ahmed.atef@appzoneltd.com
+  email_support: lastmilesupport@appzoneltd.com
+  change-email-subject: Verify New Email
+  change-email-prefix: http://192.168.88.90:3000/#/verifyEmail?token=
+   
+kafka:
+  bootstrap:
+    servers: 192.168.88.90:9092
+
+security:
+  ignored: /verifyUpdatedEmail

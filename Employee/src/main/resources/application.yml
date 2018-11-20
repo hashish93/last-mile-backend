@@ -1,0 +1,47 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+    
+jsondoc:
+  version:
+      1.0
+  basePath:
+      /employee
+  packages[0]:
+      com.appzoneltd.lastmile.microservice.employee.controller
+  packages[1]:
+      com.appzoneltd.lastmile.microservice.employee.dao     
+ 
+server:
+  port: 0
+ 
+oauth2:
+  tokenServiceEndpointUrl: http://localhost:60701/d/oauth/check_token
+  clientId: DRIVER
+  clientSecret: DRIVER 
+  
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/lastmile
+    username: postgres
+    password: root
+  application:
+    name: employee
+  jpa:
+   show-sql: false
+   database: default
+   hibernate:
+     use-new-id-generator-mappings: false
+   open-in-view: false
+
+
+send_email:
+  from: ahmed.atef@appzoneltd.com
+  email_support: lastmilesupport@appzoneltd.com
+   
+kafka:
+  bootstrap:
+    servers: localhost:9092

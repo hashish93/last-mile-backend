@@ -1,0 +1,63 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.88.90:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+    
+#security:
+#  basic:
+#    enabled: false
+#  oauth2:
+#    resource:
+#      userInfoUri: http://192.168.88.90:8080/d/user
+google:
+  api-key: AIzaSyDk_3SlSM4Rfdoj_CE4Uj-xzHHFYfYxpbA
+
+server:
+  port: 0
+
+oauth2:
+  tokenServiceEndpointUrl: http://192.168.88.90:60701/d/oauth/check_token
+  clientId: DRIVER
+  clientSecret: DRIVER   
+  
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://192.168.88.90:5432/lastmile
+    username: postgres
+    password: root
+  application:
+    name: DRIVER-REQUESTANDPACKAGEDETAILS
+  jpa:
+    show-sql: true
+    database: default 
+    hibernate:
+      use-new-id-generator-mappings: false
+    open-in-view: false
+  couchbase: 
+    bootstrap-hosts: 192.168.88.90
+    bucket:
+      name: vehicle_tracking
+  data:
+    couchbase:
+      auto-index: true
+      
+kafka:
+  bootstrap:
+    servers: 192.168.88.90:9092
+
+email:
+  from: ibrahim.ali@appzoneltd.com
+  verify-subject: Verify Email
+
+security:
+  ignored: /forgotPassword, /forgotPasswordVerifyToken, /addNewPassword, /register, /submitRegisterVerification , /carBrands , /carModels
+
+  
+features:
+  FREELANCER_DRIVER:
+    enabled: true  
+  CORPORATE_DIVER:
+    enabled: true

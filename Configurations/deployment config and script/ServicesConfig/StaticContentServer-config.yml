@@ -1,0 +1,50 @@
+server:
+  port: 0
+  
+  
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/lastmile
+    username: postgres
+    password: root
+  application:
+    name: STATICCONTENTSERVER 
+   
+serverId: 1
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+
+Filters:
+  list:  
+    - beanName: ValidateImageSizeAndFormatFilter
+      fileExtensions: jpg,png,jpeg
+      
+    - beanName: SaveFileFilter
+      fileExtensions: /    
+  
+    - beanName: ResizeImageFilter
+      fileExtensions: jpg,png,jpeg 
+        
+
+File:
+ # path: c:\\files\\ #Windows
+  path: /home/appzone/files/ #Linux
+
+
+jsondoc:
+  version:
+      1.0
+  basePath:
+      /staticcontent
+  packages[0]:
+      com.appzoneltd.lastmile.microservice.controller
+  packages[1]:
+      com.appzoneltd.lastmile.microservice.model
+  

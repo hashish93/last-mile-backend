@@ -1,0 +1,1 @@
+INSERT INTO roles (role_id, rolename, iseditable, description, version, enabled) VALUES (1, 'super_admin', true, 'Super Admin User', 0, true);

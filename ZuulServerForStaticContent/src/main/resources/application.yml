@@ -1,0 +1,63 @@
+server:
+  port: 8082
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.jks
+    key-store-password: appzone
+    key-password: appzone
+    
+    key-alias: lastmile
+  
+  
+spring:
+  application:
+    name: ZUULSERVERFORSTATICCONTENT
+
+zuul:
+  host:
+    max-per-route-connections: 500
+    max-total-connections: 1000
+   # socket-timeout-millis: 30000
+    
+  semaphore:
+    max-semaphores: 1000
+  ignored-services: '*'
+  add-proxy-headers: true
+  prefix: /file
+  strip-prefix: true 
+  routes:
+    STATICONTENTSERVER:
+      path: /**
+      serviceId: STATICCONTENTSERVER
+
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: false
+        isolation:
+          strategy: THREAD
+          thread:
+            timeoutInMilliseconds: 60000
+          semaphore: 
+            maxConcurrentRequests: 1000
+      circuitBreaker: 
+        enabled: false
+        
+ribbon:
+  ReadTimeout: 60000
+  ConnectTimeout: 1000
+  maxAutoRetries: 1
+  MaxAutoRetriesNextServer: 1       
+    
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${server.port}}        
+    
+    
+logging:
+  file: ZuulServerForStaticConent.log

@@ -1,0 +1,10 @@
+USE COMMANDS TO INSTALL APACHE2 :
+1-	sudo apt-get update
+2-	sudo apt-get install apache2
+3-	sudo a2enmod
+4-	deflate headers lbmethod_byrequests proxy proxy_ajp proxy_balancer proxy_connect proxy_http proxy_wstunnel rewrite ssl
+5-	add sites-enabled directory
+6-	add logs directory
+7-	sudo service apache2 restart
+
+*************************

@@ -1,0 +1,56 @@
+kafka:
+  bootstrap:
+    servers: 192.168.88.90:9092
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.88.90:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+    
+jsondoc:
+  version:
+      1.0
+  basePath:
+      /recipient
+  packages[0]:
+      com.appzoneltd.lastmile.microservice.recipient.controller
+  packages[1]:
+      com.appzoneltd.lastmile.microservice.recipient.dao
+
+server:
+  port: 0
+  
+  
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://192.168.88.90:5432/lastmile
+    username: postgres
+    password: root
+  application:
+    name: CUSTOMER
+  couchbase:
+    bootstrap-hosts: 192.168.88.90
+    bucket:
+      name: customer_app_firebase_token
+  data:
+    couchbase:
+      auto-index: true
+
+oauth2:
+  tokenServiceEndpointUrl: http://192.168.88.90:60700/u/oauth/check_token
+  clientId: WEB
+  clientSecret: WEB
+
+security:
+  ignored: /register, /forgotPassword, /forgotPasswordVerifyToken, /addNewPassword
+
+
+email:
+  from: a@b.net
+  verify-subject: Verification Mail
+  
+notification:
+  default-type: android
